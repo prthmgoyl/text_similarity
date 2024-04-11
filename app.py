@@ -4,7 +4,7 @@ import spacy
 from flask import Flask, request, jsonify, send_from_directory , render_template
 
 # Loading the pre-trained model
-nlp = spacy.load("en_core_web_lg")
+nlp = spacy.load("en_core_web_sm")
 
 
 def calculate_similarity(text1, text2):

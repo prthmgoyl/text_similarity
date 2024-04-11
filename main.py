@@ -45,6 +45,3 @@ def calculate_similarity_endpoint():
 #Response
     return jsonify(response)
 
-#Run
-if __name__ == '__main__':
-    app.run(debug=True) 

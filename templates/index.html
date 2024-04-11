@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Similarity Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 30px;
+            font-size: 28px;
+        }
+        .container {
+            margin: 0 auto;
+            width: 80%;
+            max-width: 600px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.5s ease-out;
+        }
+        textarea {
+            width: calc(100% - 20px);
+            resize: vertical;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+        textarea:focus {
+            border-color: #66afe9;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #66afe9;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #4c8dc3;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Text Similarity Calculator</h1>
+        <div>
+            <label for="text1">Text 1:</label><br>
+            <textarea id="text1" rows="4" cols="50"></textarea>
+        </div>
+        <div>
+            <label for="text2">Text 2:</label><br>
+            <textarea id="text2" rows="4" cols="50"></textarea>
+        </div>
+        <button onclick="calculateSimilarity()">Calculate Similarity</button>
+        <div id="result"></div>
+        <div id="error" class="error"></div>
+    </div>
+
+    <script>
+        function calculateSimilarity() {
+            var text1 = document.getElementById("text1").value.trim();
+            var text2 = document.getElementById("text2").value.trim();
+
+            if (!text1 || !text2) {
+                document.getElementById("error").innerText = "Please provide both texts.";
+                console.log("Error: Both texts are required.");
+                return;
+            }
+
+            // Make a POST request to the Flask API
+            fetch('/calculate_similarity', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    text1: text1,
+                    text2: text2
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Display the similarity score
+                document.getElementById("result").innerText = "Similarity Score: " + data['similarity score'];
+                document.getElementById("error").innerText = "";
+                console.log("Similarity score:", data['similarity score']);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById("error").innerText = "An error occurred. Please try again later.";
+                console.log("Error:", error);
+            });
+        }
+    </script>
+</body>
+</html>
